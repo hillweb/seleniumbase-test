@@ -66,10 +66,14 @@ def main(url):
             sb.uc_gui_handle_captcha()
         except Exception:
             logger.info("验证失败，重试中...")
+
+        flag=check_turnstile_success(sb)
+        print(f'Turnstile验证结果：{flag}')
+        if not flag:
             try:
                 sb.uc_gui_click_captcha()
             except Exception as e:
-                logger.info(f"验证点击失败: {e}")
+                logger.info(f"验证点击失败: {e}") 
         flag=check_turnstile_success(sb)
         print(f'Turnstile验证结果：{flag}')
         # 验证是否已经通过（标题或页面内容变化）

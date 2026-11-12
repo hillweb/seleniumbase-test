@@ -69,8 +69,9 @@ def main(url):
     with SB(**sb_kwargs) as sb:
         sb.uc_open_with_reconnect(url, reconnect_time=5)
         sb.wait_for_ready_state_complete()
+        sb.sleep(3)
 
-        logger.info("填写登录信息...")
+        # logger.info("填写登录信息...")
         # sb.wait_for_element_visible('input[type="email"]', timeout=10)
         # ---------根据页面情况修改
         # sb.press_keys('input[type="email"]', 'abc@abc.com')
@@ -80,6 +81,7 @@ def main(url):
         # time.sleep(3)
         
         logger.info("处理 Turnstile 验证码...")
+        sb.uc_gui_handle_captcha()
         already_done = wait_for_turnstile_success(sb, timeout=5)
         if already_done:
             logger.info("Turnstile 已自动完成，直接提交")

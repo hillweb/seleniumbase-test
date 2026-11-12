@@ -63,7 +63,7 @@ def main(url):
         sb.wait_for_ready_state_complete()
         logger.info("Cloudflare 验证码/Turnstile 验证中...")
         try:
-            sb.uc_gui_handle_captcha()
+            # sb.uc_gui_handle_captcha()
             sb.uc_gui_click_captcha()
             flag=check_turnstile_success(sb)
             print(f'第一次Turnstile验证结果：{flag}')

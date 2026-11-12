@@ -34,7 +34,7 @@ def login(sb, email, password):
     else:
         return False
 
-def check_turnstile_success():
+def check_turnstile_success(sb):
     success = sb.execute_script('''
         var resp = document.querySelector('input[name="cf-turnstile-response"]');
         if (resp && resp.value && resp.value.length > 20) return true;
@@ -70,7 +70,7 @@ def main(url):
                 sb.uc_gui_click_captcha()
             except Exception as e:
                 logger.info(f"验证点击失败: {e}")
-        flag=check_turnstile_success()
+        flag=check_turnstile_success(sb)
         print(f'Turnstile验证结果：{flag}')
         # 验证是否已经通过（标题或页面内容变化）
         logger.info("已通过Turnstile验证或无需验证")

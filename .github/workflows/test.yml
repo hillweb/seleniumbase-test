@@ -1,9 +1,13 @@
 name: SB测试
+
 on:
+  schedule:
+    - cron: '0 6 * * 3'
   workflow_dispatch: null
+  
 permissions:
-  contents: write
-  actions: write
+  contents: read
+  
 jobs:
   renew_domains:
     runs-on: ubuntu-24.04

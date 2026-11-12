@@ -64,12 +64,20 @@ def main(url):
         "locale": "en",
         "headed": False,
         "user_data_dir": None,
-        "chromium_arg": "--disable-blink-features=AutomationControlled",
-        "window_size": "1920,1280",
+        "chromium_arg": "--disable-blink-features=AutomationControlled"
     }
     with SB(**sb_kwargs) as sb:
         sb.uc_open_with_reconnect(url, reconnect_time=5)
         sb.wait_for_ready_state_complete()
+
+        logger.info("填写登录信息...")
+        sb.wait_for_element_visible('input[type="email"]', timeout=10)
+        # ---------根据页面情况修改
+        sb.press_keys('input[type="email"]', email)
+        sb.press_keys('input[type="password"]', password)
+        safe_screenshot(sb, "1-填写表单.png")
+        time.sleep(3)
+        
         logger.info("处理 Turnstile 验证码...")
         already_done = wait_for_turnstile_success(sb, timeout=5)
         if already_done:
@@ -87,7 +95,7 @@ def main(url):
                     break
             else:
                 logger.warning("Turnstile 多次尝试后仍未通过，尝试强制提交...")
-        sb.save_screenshot("1-Turnstile验证.png")
+        sb.save_screenshot("2-Turnstile验证.png")
         # loginOk=login(sb,email,password)
         # if not loginOk:
         #     logger.info('登录失败。')

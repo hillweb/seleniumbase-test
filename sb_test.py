@@ -46,7 +46,6 @@ def wait_for_turnstile_success(sb,timeout: int = 30) -> bool:
     return False
 
 def handle_captcha(sb):
-    sb.uc_gui_handle_captcha()
     already_done = wait_for_turnstile_success(sb, timeout=5)
     if already_done:
         logger.info("Turnstile 已自动完成，直接提交")
@@ -54,7 +53,8 @@ def handle_captcha(sb):
         logger.info("Turnstile 未自动完成，尝试点击...")
         for click_attempt in range(3):
             try:
-                sb.uc_gui_click_captcha()
+                # sb.uc_gui_click_captcha()
+                sb.uc_gui_handle_captcha()
                 logger.info(f"点击验证框第 {click_attempt + 1} 次")
             except Exception as e:
                 logger.warning(f"点击验证码异常 (第 {click_attempt + 1} 次): {e}")

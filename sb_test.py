@@ -76,8 +76,8 @@ def main(url):
         # sb.press_keys('input[type="email"]', 'abc@abc.com')
         # sb.press_keys('input[type="password"]', 'password')
         # sb.sleep(1)
-        sb.save_screenshot("1-填写表单.png")
-        time.sleep(3)
+        # sb.save_screenshot("1-填写表单.png")
+        # time.sleep(3)
         
         logger.info("处理 Turnstile 验证码...")
         already_done = wait_for_turnstile_success(sb, timeout=5)

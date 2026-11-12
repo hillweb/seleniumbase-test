@@ -12,7 +12,28 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-
+def wait_for_turnstile_success(sb, timeout: int = 30) -> bool:
+    logger.info("等待 Turnstile 验证...")
+    start = time.time()
+    while time.time() - start < timeout:
+        try:
+            success = sb.execute_script('''
+                var resp = document.querySelector('input[name="cf-turnstile-response"]');
+                if (resp && resp.value && resp.value.length > 20) return true;
+                var grecap = document.querySelector('textarea[name="g-recaptcha-response"]');
+                if (grecap && grecap.value && grecap.value.length > 20) return true;
+                var iframe = document.querySelector('iframe[src*="challenges.cloudflare.com"]');
+                if (iframe && iframe.getAttribute("data-state") === "solved") return true;
+                return false;
+            ''')
+            if success:
+                logger.info("✅ Turnstile 验证成功")
+                return True
+        except:
+            pass
+        time.sleep(1)
+    logger.warning("⏰ Turnstile 验证超时")
+    return False
 def login(sb, email, password):
     logger.info("填写登录信息...")
     sb.wait_for_element_visible('input[type="email"]', timeout=10)
@@ -34,20 +55,7 @@ def login(sb, email, password):
     else:
         return False
 
-def check_turnstile_success(sb):
-    success = sb.execute_script('''
-        var resp = document.querySelector('input[name="cf-turnstile-response"]');
-        if (resp && resp.value && resp.value.length > 20) return true;
-        var grecap = document.querySelector('textarea[name="g-recaptcha-response"]');
-        if (grecap && grecap.value && grecap.value.length > 20) return true;
-        var iframe = document.querySelector('iframe[src*="challenges.cloudflare.com"]');
-        if (iframe && iframe.getAttribute("data-state") === "solved") return true;
-        return false;
-    ''')
-    if success:
-        logger.info("✅ Turnstile 验证成功")
-        return True
-    return False
+
 def main(url):
     sb_kwargs = {
         "uc": True,
@@ -61,25 +69,23 @@ def main(url):
     with SB(**sb_kwargs) as sb:
         sb.uc_open_with_reconnect(url, reconnect_time=5)
         sb.wait_for_ready_state_complete()
-        logger.info("Cloudflare 验证码/Turnstile 验证中...")
-        try:
-            # sb.uc_gui_handle_captcha()
-            sb.uc_gui_click_captcha()
-            flag=check_turnstile_success(sb)
-            print(f'第一次Turnstile验证结果：{flag}')
-            if not flag:
-                raise Exception("操作未成功，手动触发异常！")
-        except Exception:
-            logger.info("第二次Turnstile验证，重试中...")
-            try:
-                sb.uc_gui_handle_captcha()
-            except Exception as e:
-                logger.info(f"验证点击失败: {e}") 
-        flag=check_turnstile_success(sb)
-        print(f'最后Turnstile验证结果：{flag}')
-        # 验证是否已经通过（标题或页面内容变化）
-        logger.info("已通过Turnstile验证或无需验证")
-        logger.info(f"当前标题: {sb.get_title()}")
+        logger.info("处理 Turnstile 验证码...")
+        already_done = wait_for_turnstile_success(sb, timeout=5)
+        if already_done:
+            logger.info("Turnstile 已自动完成，直接提交")
+        else:
+            logger.info("Turnstile 未自动完成，尝试点击...")
+            for click_attempt in range(3):
+                try:
+                    sb.uc_gui_click_captcha()
+                    logger.info(f"点击验证码第 {click_attempt + 1} 次")
+                except Exception as e:
+                    logger.warning(f"点击验证码异常 (第 {click_attempt + 1} 次): {e}")
+                time.sleep(2)
+                if wait_for_turnstile_success(sb, timeout=10):
+                    break
+            else:
+                logger.warning("Turnstile 多次尝试后仍未通过，尝试强制提交...")
         sb.save_screenshot("1-Turnstile验证.png")
         # loginOk=login(sb,email,password)
         # if not loginOk:

@@ -1,0 +1,19 @@
+name: Clear Workflow Runs
+
+on:
+  workflow_dispatch: # 允许你在 Actions 页面手动点击触发
+
+jobs:
+  del_runs:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0      # 保留最近几天的记录（0 表示全部删除）
+          keep_minimum_runs: 0 # 即使全部删除也不保留最低条数

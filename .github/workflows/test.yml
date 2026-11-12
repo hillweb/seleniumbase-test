@@ -31,4 +31,5 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: screenshots-DG-RENEW
+          path: *.png
           retention-days: 3

@@ -24,7 +24,6 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 def wait_for_turnstile_success(sb,timeout: int = 30) -> bool:
-    logger.info("等待 Turnstile 验证...")
     start = time.time()
     while time.time() - start < timeout:
         try:
@@ -47,7 +46,6 @@ def wait_for_turnstile_success(sb,timeout: int = 30) -> bool:
     return False
 
 def handle_captcha(sb):
-    logger.info("处理 Turnstile 验证...")
     sb.uc_gui_handle_captcha()
     already_done = wait_for_turnstile_success(sb, timeout=5)
     if already_done:

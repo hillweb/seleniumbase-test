@@ -39,8 +39,8 @@ def login(sb, email, password):
     logger.info("填写登录信息...")
     sb.wait_for_element_visible('input[type="email"]', timeout=10)
     # ---------根据页面情况修改
-    sb.press_keys('input[type="email"]', email)
-    sb.press_keys('input[type="password"]', password)
+    sb.press_keys('input[type="email"]', 'abc@abc.com')
+    sb.press_keys('input[type="password"]', 'abcabc')
     safe_screenshot(sb, "2-填写表单.png")
 
     logger.info("点击登录按钮...")
@@ -73,8 +73,9 @@ def main(url):
         logger.info("填写登录信息...")
         sb.wait_for_element_visible('input[type="email"]', timeout=10)
         # ---------根据页面情况修改
-        sb.press_keys('input[type="email"]', email)
-        sb.press_keys('input[type="password"]', password)
+        sb.press_keys('input[type="email"]', 'abc@abc.com')
+        sb.press_keys('input[type="password"]', 'password')
+        sb.sleep(1)
         safe_screenshot(sb, "1-填写表单.png")
         time.sleep(3)
         

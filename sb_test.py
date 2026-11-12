@@ -71,11 +71,11 @@ def main(url):
         sb.wait_for_ready_state_complete()
 
         logger.info("填写登录信息...")
-        sb.wait_for_element_visible('input[type="email"]', timeout=10)
+        # sb.wait_for_element_visible('input[type="email"]', timeout=10)
         # ---------根据页面情况修改
-        sb.press_keys('input[type="email"]', 'abc@abc.com')
-        sb.press_keys('input[type="password"]', 'password')
-        sb.sleep(1)
+        # sb.press_keys('input[type="email"]', 'abc@abc.com')
+        # sb.press_keys('input[type="password"]', 'password')
+        # sb.sleep(1)
         sb.save_screenshot("1-填写表单.png")
         time.sleep(3)
         

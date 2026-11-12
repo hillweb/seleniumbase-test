@@ -45,26 +45,6 @@ def wait_for_turnstile_success(timeout: int = 30) -> bool:
         time.sleep(1)
     logger.warning("⏰ Turnstile 验证超时")
     return False
-def login(email, password):
-    logger.info("填写登录信息...")
-    sb.wait_for_element_visible('input[type="email"]', timeout=10)
-    # ---------根据页面情况修改
-    sb.press_keys('input[type="email"]', 'abc@abc.com')
-    sb.press_keys('input[type="password"]', 'abcabc')
-    safe_screenshot(sb, "2-填写表单.png")
-
-    logger.info("点击登录按钮...")
-    # submit_button="form>button"
-    submit_button = "button[type='submit']"
-    sb.uc_click(submit_button)
-    sb.wait_for_ready_state_complete()
-    current_url = sb.get_current_url()
-    logger.info(f"登录后URL: {current_url}")
-    safe_screenshot(sb, "3-提交登录.png")
-    if "/dashboard" in current_url:
-        return True
-    else:
-        return False
 
 def handle_captcha():
     logger.info("处理 Turnstile 验证...")

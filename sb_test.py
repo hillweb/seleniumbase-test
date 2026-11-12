@@ -70,7 +70,8 @@ def main(url):
                 sb.uc_gui_click_captcha()
             except Exception as e:
                 logger.info(f"验证点击失败: {e}")
-        
+        flag=check_turnstile_success()
+        print(f'Turnstile验证结果：{flag}')
         # 验证是否已经通过（标题或页面内容变化）
         logger.info("已通过Turnstile验证或无需验证")
         logger.info(f"当前标题: {sb.get_title()}")

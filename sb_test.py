@@ -53,8 +53,7 @@ def handle_captcha(sb):
         logger.info("Turnstile 未自动完成，尝试点击...")
         for click_attempt in range(3):
             try:
-                # sb.uc_gui_click_captcha()
-                sb.uc_gui_handle_captcha()
+                sb.uc_gui_click_captcha()
                 logger.info(f"点击验证框第 {click_attempt + 1} 次")
             except Exception as e:
                 logger.warning(f"点击验证码异常 (第 {click_attempt + 1} 次): {e}")
@@ -62,6 +61,7 @@ def handle_captcha(sb):
             if wait_for_turnstile_success(sb, timeout=10):
                 break
         else:
+            sb.uc_gui_handle_captcha()
             logger.warning("Turnstile 多次尝试后仍未通过，尝试强制提交...")
 def main(account):
     email=account['email']

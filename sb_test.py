@@ -34,7 +34,20 @@ def login(sb, email, password):
     else:
         return False
 
-
+def check_turnstile_success():
+    success = sb.execute_script('''
+        var resp = document.querySelector('input[name="cf-turnstile-response"]');
+        if (resp && resp.value && resp.value.length > 20) return true;
+        var grecap = document.querySelector('textarea[name="g-recaptcha-response"]');
+        if (grecap && grecap.value && grecap.value.length > 20) return true;
+        var iframe = document.querySelector('iframe[src*="challenges.cloudflare.com"]');
+        if (iframe && iframe.getAttribute("data-state") === "solved") return true;
+        return false;
+    ''')
+    if success:
+        logger.info("✅ Turnstile 验证成功")
+        return True
+    return False
 def main(url):
     sb_kwargs = {
         "uc": True,
@@ -57,6 +70,7 @@ def main(url):
                 sb.uc_gui_click_captcha()
             except Exception as e:
                 logger.info(f"验证点击失败: {e}")
+        
         # 验证是否已经通过（标题或页面内容变化）
         logger.info("已通过Turnstile验证或无需验证")
         logger.info(f"当前标题: {sb.get_title()}")

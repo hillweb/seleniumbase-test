@@ -1,0 +1,34 @@
+name: DG_RENEW
+on:
+  workflow_dispatch: null
+permissions:
+  contents: write
+  actions: write
+jobs:
+  renew_domains:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: 检测最近续费日期|账号
+        run: |
+          python3 dg_check.py
+      - name: 配置Python环境
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          
+      - name: 安装SeleniumBase
+        run: |
+          echo "RECENT: $RECENT"
+          echo "-----------------"
+          sudo apt-get update && sudo apt-get install -y xvfb
+          pip3 install seleniumbase  requests
+          
+      - name: 执行脚本
+        run: python3 dg_renew.py
+        
+      - name: 保存WEB登录时的调试图片
+        uses: actions/upload-artifact@v7
+        with:
+          name: screenshots-DG-RENEW
+          retention-days: 3

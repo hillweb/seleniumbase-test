@@ -10,7 +10,7 @@ sb_kwargs = {
     "user_data_dir": None,
     "chromium_arg": "--disable-blink-features=AutomationControlled"
 }
-sb=SB(**sb_kwargs)
+
 #------------------配置logging
 logging.basicConfig(
     level=logging.INFO,
@@ -65,32 +65,34 @@ def handle_captcha(sb):
                 break
         else:
             logger.warning("Turnstile 多次尝试后仍未通过，尝试强制提交...")
-def main(sb,account):
+def main(account):
     email=account['email']
     password=account['password']
-    # 打开登录页面
-    url="https://betadash.lunes.host/login"
-    sb.uc_open_with_reconnect(url, reconnect_time=5)
-    sb.wait_for_ready_state_complete()
-    # 第一步：填写登录信息
-    logger.info("填写登录信息...")
-    sb.wait_for_element_visible('input[type="email"]', timeout=10)
-    sb.press_keys('input[type="email"]', email)
-    sb.press_keys('input[type="password"]', password)
-    sb.save_screenshot('1-Account.png')
-    
-    # 第二步：处理Turnstile验证
-    logger.info("处理 Turnstile 验证...")
-    handle_captcha(sb)
-    sb.save_screenshot('2-Turnstile.png')
-    
-    # 第三步：提交登录
-    submit_button = "button[type=submit]"
-    sb.click(submit_button)
-    sb.wait_for_ready_state_complete()
-    current_url = sb.get_current_url()
-    logger.info(f"登录后URL: {current_url}")
-    sb.save_screenshot('3-Login.png')
+
+    with SB(**sb_kwargs) as sb:
+        # 打开登录页面
+        url="https://betadash.lunes.host/login"
+        sb.uc_open_with_reconnect(url, reconnect_time=5)
+        sb.wait_for_ready_state_complete()
+        # 第一步：填写登录信息
+        logger.info("填写登录信息...")
+        sb.wait_for_element_visible('input[type="email"]', timeout=10)
+        sb.press_keys('input[type="email"]', email)
+        sb.press_keys('input[type="password"]', password)
+        sb.save_screenshot('1-Account.png')
+        
+        # 第二步：处理Turnstile验证
+        logger.info("处理 Turnstile 验证...")
+        handle_captcha(sb)
+        sb.save_screenshot('2-Turnstile.png')
+        
+        # 第三步：提交登录
+        submit_button = "button[type=submit]"
+        sb.click(submit_button)
+        sb.wait_for_ready_state_complete()
+        current_url = sb.get_current_url()
+        logger.info(f"登录后URL: {current_url}")
+        sb.save_screenshot('3-Login.png')
 
 
     
@@ -99,4 +101,4 @@ def main(sb,account):
 
 if __name__ == "__main__":
     account={'email':'abc@abc.com','password':'abcabc'}
-    main(sb,account)
+    main(account)

@@ -1,4 +1,4 @@
-name: DG_RENEW
+name: SB测试
 on:
   workflow_dispatch: null
 permissions:
@@ -9,9 +9,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - name: 检测最近续费日期|账号
-        run: |
-          python3 dg_check.py
       - name: 配置Python环境
         uses: actions/setup-python@v7
         with:
@@ -19,8 +16,6 @@ jobs:
           
       - name: 安装SeleniumBase
         run: |
-          echo "RECENT: $RECENT"
-          echo "-----------------"
           sudo apt-get update && sudo apt-get install -y xvfb
           pip3 install seleniumbase  requests
           

@@ -9,7 +9,7 @@ permissions:
   contents: read
   
 jobs:
-  renew_domains:
+  seleniumbase:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -26,9 +26,15 @@ jobs:
       - name: 执行脚本
         run: python3 sb_test.py
         
-      - name: 保存WEB登录时的调试图片
-        uses: actions/upload-artifact@v7
+      # - name: 保存WEB登录时的调试图片
+      #   uses: actions/upload-artifact@v7
+      #   with:
+      #     name: screenshots-DG-RENEW
+      #     path: ./*.png
+      #     retention-days: 3
+
+      - name: 保存WEB登录时的调试日志
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          name: screenshots-DG-RENEW
-          path: ./*.png
-          retention-days: 3
+          file_pattern: "*.png"
+          commit_message: "ci: save history log"

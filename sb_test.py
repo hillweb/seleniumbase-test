@@ -1,5 +1,6 @@
 from seleniumbase import SB
 import logging
+import time
 
 logging.basicConfig(
     level=logging.INFO,

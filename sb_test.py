@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-def wait_for_turnstile_success(timeout: int = 30) -> bool:
+def wait_for_turnstile_success(sb,timeout: int = 30) -> bool:
     logger.info("等待 Turnstile 验证...")
     start = time.time()
     while time.time() - start < timeout:
@@ -46,7 +46,7 @@ def wait_for_turnstile_success(timeout: int = 30) -> bool:
     logger.warning("⏰ Turnstile 验证超时")
     return False
 
-def handle_captcha():
+def handle_captcha(sb):
     logger.info("处理 Turnstile 验证...")
     sb.uc_gui_handle_captcha()
     already_done = wait_for_turnstile_success(sb, timeout=5)
@@ -65,7 +65,7 @@ def handle_captcha():
                 break
         else:
             logger.warning("Turnstile 多次尝试后仍未通过，尝试强制提交...")
-def main(account):
+def main(sb,account):
     email=account['email']
     password=account['password']
     # 打开登录页面
@@ -81,7 +81,7 @@ def main(account):
     
     # 第二步：处理Turnstile验证
     logger.info("处理 Turnstile 验证...")
-    handle_captcha()
+    handle_captcha(sb)
     sb.save_screenshot('2-Turnstile.png')
     
     # 第三步：提交登录
@@ -99,4 +99,4 @@ def main(account):
 
 if __name__ == "__main__":
     account={'email':'abc@abc.com','password':'abcabc'}
-    main(account)
+    main(sb,account)

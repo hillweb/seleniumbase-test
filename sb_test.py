@@ -59,7 +59,7 @@ def main(url):
         # 验证是否已经通过（标题或页面内容变化）
         logger.info("已通过Turnstile验证或无需验证")
         logger.info(f"当前标题: {sb.get_title()}")
-        safe_screenshot(sb,'1-Turnstile验证.png')
+        sb.save_screenshot('1-Turnstile验证.png')
         # loginOk=login(sb,email,password)
         # if not loginOk:
         #     logger.info('登录失败。')

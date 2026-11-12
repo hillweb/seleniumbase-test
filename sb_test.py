@@ -64,6 +64,7 @@ def main(url):
         logger.info("Cloudflare 验证码/Turnstile 验证中...")
         try:
             sb.uc_gui_handle_captcha()
+            sb.uc_gui_click_captcha()
             flag=check_turnstile_success(sb)
             print(f'第一次Turnstile验证结果：{flag}')
             if not flag:
@@ -71,7 +72,7 @@ def main(url):
         except Exception:
             logger.info("第二次Turnstile验证，重试中...")
             try:
-                sb.uc_gui_click_captcha()
+                sb.uc_gui_handle_captcha()
             except Exception as e:
                 logger.info(f"验证点击失败: {e}") 
         flag=check_turnstile_success(sb)

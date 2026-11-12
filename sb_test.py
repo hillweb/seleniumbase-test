@@ -64,18 +64,18 @@ def main(url):
         logger.info("Cloudflare 验证码/Turnstile 验证中...")
         try:
             sb.uc_gui_handle_captcha()
+            flag=check_turnstile_success(sb)
+            print(f'第一次Turnstile验证结果：{flag}')
+            if not flag:
+                raise Exception("操作未成功，手动触发异常！")
         except Exception:
-            logger.info("验证失败，重试中...")
-
-        flag=check_turnstile_success(sb)
-        print(f'Turnstile验证结果：{flag}')
-        if not flag:
+            logger.info("第二次Turnstile验证，重试中...")
             try:
                 sb.uc_gui_click_captcha()
             except Exception as e:
                 logger.info(f"验证点击失败: {e}") 
         flag=check_turnstile_success(sb)
-        print(f'Turnstile验证结果：{flag}')
+        print(f'最后Turnstile验证结果：{flag}')
         # 验证是否已经通过（标题或页面内容变化）
         logger.info("已通过Turnstile验证或无需验证")
         logger.info(f"当前标题: {sb.get_title()}")

@@ -25,7 +25,7 @@ jobs:
           pip3 install seleniumbase  requests
           
       - name: 执行脚本
-        run: python3 dg_renew.py
+        run: python3 sb_test.py
         
       - name: 保存WEB登录时的调试图片
         uses: actions/upload-artifact@v7

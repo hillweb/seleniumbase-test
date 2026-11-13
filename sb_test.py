@@ -117,7 +117,7 @@ def handle_captcha(sb):
 def my_jobs(sb,data=None):
     logger.info(f"业务操作...{data}")
     sucess=False
-    # 业务操作逻辑
+    # 业务操作逻辑： 根据需要自行实现
     # ...
     # ...
     safe_screenshot(sb,'4-Business.png')

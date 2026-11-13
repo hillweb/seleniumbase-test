@@ -7,13 +7,13 @@ on:
   workflow_dispatch:
 jobs:
   run-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # 🌟 必须添加以下权限，否则 Action 没有权限推送到你的仓库
     permissions:
       contents: write
       actions: write
     env:
-      CRONTAB: '33 12 1 1 1'
+      CRONTAB: '33 12 * * 1'
     steps:
       - name: 检出代码
         uses: actions/checkout@v7

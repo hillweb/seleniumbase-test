@@ -1,0 +1,21 @@
+name: 修改仓库变量
+# 2026-11-13 目前可用；完美
+on:
+  workflow_dispatch: null
+permissions:
+  contents: write
+  actions: write
+jobs:
+  reminder:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: 更新账号数据-仓库变量：ACCOUNTS
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW }}
+          ACCOUNTS: ${{ vars.ACCOUNTS_BAK }}
+        run: |
+          echo "更新账号数据: $ACCOUNTS"
+          # 使用环境变量，外加双引号
+          gh variable set ACCOUNTS --body "$ACCOUNTS"
+

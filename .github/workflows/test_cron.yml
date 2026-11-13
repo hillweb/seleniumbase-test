@@ -1,0 +1,39 @@
+name: 修改cron测试
+# 2026-11-13 目前可用；完美
+# 其他模块修改cron后会丢失引号
+on:
+  schedule:
+    - cron: '33 12 1 * *'
+  workflow_dispatch:
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    # 🌟 必须添加以下权限，否则 Action 没有权限推送到你的仓库
+    permissions:
+      contents: write
+      actions: write
+    env:
+      CRONTAB: '33 12 1 * *'
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.WORKFLOW }}
+      - name: 更新cron；提交文件到仓库
+        run: |
+          date -u -d "+8 hours" +"%Y-%m-%d %H:%M:%S +0800" |tee cron_text.log
+          echo "cron: ${{ env.CRONTAB }}"
+          res=${{ github.workflow_ref }}
+          filename=$(basename ${res%%@*})
+          echo $filename
+          echo "-------------更新cron需要workflow权限的token---------------------"
+          # 使用官方yq更新cron，会修改run的多行命令转为单行命令
+          sed -i "/cron:/ s|'.*'|\'$CRONTAB\'|" .github/workflows/$filename
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/
+          # 顺便提交其他文件
+          git add ./*.log
+          git commit -m "chore: update cron" || exit 0
+          git push
+

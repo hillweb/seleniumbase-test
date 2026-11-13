@@ -33,7 +33,7 @@ jobs:
           path: ./*.png
           retention-days: 3
 
-      # - name: 保存WEB登录时的调试日志
+      # - name: 提交到仓库
       #   uses: stefanzweifel/git-auto-commit-action@v7
       #   with:
       #     file_pattern: "*.png"

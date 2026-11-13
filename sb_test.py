@@ -51,11 +51,24 @@ def safe_screenshot(sb, filename: str):
 # ------------------TG通知函数
 def tg_message(msg):
     try:
+        # 自建TGAPI发送通知
         TG_API=os.getenv('TG_API')
         requests.post(TG_API,data=msg)
         logger.info(f"TG通知：{msg}")
     except  Exception as e:
-        logger.info(f"TG通知失败：{e}")
+        # 使用TG_TOKEN发送通知
+        tg_config=json.loads(os.getenv('TG_TOKEN'))
+        token = tg_config.get("token")
+        chatid = tg_config.get("chatid")
+        data={
+            "chat_id": chatid,
+            "text": msg
+        }
+        response = requests.post(f"https://api.telegram.org/bot{token}/sendMessage",json=data)
+        response.raise_for_status()
+        logger.info(f"TG通知：{msg}")
+    except Exception as e:
+        logger.warning(f"TG通知失败：{e}")
     
 # ------------------Turnstile验证函数
 def wait_for_turnstile_success(sb,timeout: int = 30) -> bool:
@@ -105,6 +118,8 @@ def my_jobs(sb,data=None):
     logger.info(f"业务操作...{data}")
     sucess=False
     # 业务操作逻辑
+    # ...
+    # ...
     safe_screenshot(sb,'4-Business.png')
     return sucess
 

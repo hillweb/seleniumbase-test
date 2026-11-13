@@ -13,7 +13,7 @@ jobs:
       contents: write
       actions: write
     env:
-      CRONTAB: '33 12 1 * *'
+      CRONTAB: '33 12 1 1 1'
     steps:
       - name: 检出代码
         uses: actions/checkout@v7

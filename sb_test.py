@@ -114,7 +114,7 @@ def main(account):
     email=account['email']
     password=account['password']
 
-    with SB(**sb_kwargs) as sb:
+    with SB(**SB_KWARGS) as sb:
         # 打开登录页面
         url="https://betadash.lunes.host/login"
         sb.uc_open_with_reconnect(url, reconnect_time=5)
@@ -144,7 +144,6 @@ def main(account):
         # 第四步：业务操作
         logger.info("业务操作...")
         sucess=True
-        safe_screenshot(sb,'4-Business.png')
 
         # 第五步：TG通知
         if sucess:

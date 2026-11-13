@@ -103,7 +103,7 @@ def handle_captcha(sb):
 # ------------------业务操作函数
 def my_jobs(sb,data=None):
     logger.info(f"业务操作...{data}")
-    sucess=True
+    sucess=False
     # 业务操作逻辑
     safe_screenshot(sb,'4-Business.png')
     return sucess
@@ -143,7 +143,7 @@ def main(account):
 
         # 第四步：业务操作
         logger.info("业务操作...")
-        sucess=True
+        sucess=my_jobs(sb,data=email)
 
         # 第五步：TG通知
         if sucess:
@@ -159,5 +159,5 @@ if __name__ == "__main__":
         logger.info("当前环境不是 GitHub Actions，无法运行。")
         exit(1)    
     account={'email':'abc@abc.com','password':'abcabc'}
-    
+
     main(account)

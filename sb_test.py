@@ -154,5 +154,10 @@ def main(account):
 
 
 if __name__ == "__main__":
+    # 判断是否在GitHub Actions中运行
+    if 'GITHUB_ENV' not in os.environ:
+        logger.info("当前环境不是 GitHub Actions，无法运行。")
+        exit(1)    
     account={'email':'abc@abc.com','password':'abcabc'}
+    
     main(account)

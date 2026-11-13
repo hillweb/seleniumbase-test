@@ -3,11 +3,11 @@ name: 修改cron测试
 # 其他模块修改cron后会丢失引号
 on:
   schedule:
-    - cron: '33 12 1 1 1'
+    - cron: '41 14 21 8 5'
   workflow_dispatch:
 jobs:
   run-tests:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     # 🌟 必须添加以下权限，否则 Action 没有权限推送到你的仓库
     permissions:
       contents: write
@@ -22,10 +22,17 @@ jobs:
       - name: 更新cron；提交文件到仓库
         run: |
           date -u -d "+8 hours" +"%Y-%m-%d %H:%M:%S +0800" |tee cron_text.log
-          echo "cron: ${{ env.CRONTAB }}"
+          echo "cron: '${{ env.CRONTAB }}'"
           res=${{ github.workflow_ref }}
           filename=$(basename ${res%%@*})
           echo $filename
+          m=$(( RANDOM % (55 - 33 + 1) + 33 ))
+          h=$(( RANDOM % (22 - 10 + 1) + 10 ))
+          dd=$(( RANDOM % (28 - 7 + 1) + 7 ))
+          mm=$(( RANDOM % (12 - 1 + 1) + 1 ))
+          w=$(( RANDOM % 6 ))
+          export CRONTAB="$m $h $dd $mm $w"
+          echo "随机cron: '$CRONTAB'"
           echo "-------------更新cron需要workflow权限的token---------------------"
           # 使用官方yq更新cron，会修改run的多行命令转为单行命令
           sed -i "0,/cron:/ s|'.*'|'$CRONTAB'|" .github/workflows/$filename
@@ -36,4 +43,3 @@ jobs:
           git add ./*.log
           git commit -m "chore: update cron" || exit 0
           git push
-

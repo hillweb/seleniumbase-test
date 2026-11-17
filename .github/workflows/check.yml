@@ -21,6 +21,16 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y xvfb
           pip3 install seleniumbase  requests
+
+      - name: Check Chrome and SeleniumBase
+        run: |
+          which google-chrome || true
+          google-chrome --version || true
+      
+          which chromedriver || true
+          chromedriver --version || true
+      
+          python -c "import seleniumbase; print(seleniumbase.__file__)"
           
       - name: 执行脚本
         run: python3 sb_check.py

@@ -1,0 +1,39 @@
+name: SB检测
+
+on:
+
+  workflow_dispatch: null
+  
+permissions:
+  contents: write
+  
+jobs:
+  seleniumbase:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: 配置Python环境
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          
+      - name: 安装SeleniumBase
+        run: |
+          sudo apt-get update && sudo apt-get install -y xvfb
+          pip3 install seleniumbase  requests
+          
+      - name: 执行脚本
+        run: python3 sb_check.py
+        
+      # - name: 保存WEB登录时的调试图片
+      #   uses: actions/upload-artifact@v7
+      #   with:
+      #     name: screenshots-SB
+      #     path: ./*.png
+      #     retention-days: 3
+
+      # - name: 提交到仓库
+      #   uses: stefanzweifel/git-auto-commit-action@v7
+      #   with:
+      #     file_pattern: "*.png"
+      #     commit_message: "ci: save history log"
